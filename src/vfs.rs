@@ -4,8 +4,6 @@ use async_trait::async_trait;
 
 pub trait VMetadata {
     fn path(&self) -> &str;
-    fn name(&self) -> &str;
-    fn ext(&self) -> &str;
     fn is_dir(&self) -> bool;
     fn is_file(&self) -> bool;
     fn len(&self) -> u64;
