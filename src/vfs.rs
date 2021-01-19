@@ -15,4 +15,6 @@ pub trait Vfs {
     async fn rename(&self, from: &str, to: &str) -> VfsResult<()>;
 
     async fn metadata(&self, path: &str) -> VfsResult<VfsMetadata>;
+
+    async fn exists(&self, path: &str) -> VfsResult<bool>;
 }
