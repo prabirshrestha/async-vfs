@@ -1,5 +1,5 @@
 use crate::{OpenOptions, VFile, VMetadata, Vfs, VfsResult};
-use async_std::path::PathBuf;
+use async_std::{fs, path::PathBuf};
 use async_trait::async_trait;
 
 pub struct OsFs {
@@ -73,7 +73,7 @@ impl Vfs for OsFs {
     }
 
     async fn mkdir(&self, path: &str) -> VfsResult<()> {
-        todo!()
+        Ok(fs::create_dir(self.get_path(path)).await?)
     }
 
     async fn mv(&self, from: &str, to: &str) -> VfsResult<()> {
