@@ -1,3 +1,7 @@
+mod vfs;
+
+pub use vfs::Vfs;
+
 #[cfg(test)]
 mod tests {
     #[test]
