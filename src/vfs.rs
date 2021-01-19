@@ -8,4 +8,6 @@ pub trait Vfs {
 
     async fn create_dir(&self, path: &str) -> VfsResult<()>;
     async fn remove_dir(&self, path: &str) -> VfsResult<()>;
+
+    async fn remove_file(&self, path: &str) -> VfsResult<()>;
 }
