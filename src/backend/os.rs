@@ -89,7 +89,7 @@ impl Vfs for OsFs {
             .truncate(options.has_truncate())
             .open(self.get_path(path))
             .await?;
-        todo!()
+        Ok(Box::new(file))
     }
 
     async fn read_dir(

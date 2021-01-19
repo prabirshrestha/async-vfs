@@ -10,6 +10,7 @@ pub trait VMetadata {
 }
 
 pub trait VFile: Read + Write + Seek {}
+impl<T> VFile for T where T: Read + Write + Seek {}
 
 #[async_trait]
 pub trait Vfs {
