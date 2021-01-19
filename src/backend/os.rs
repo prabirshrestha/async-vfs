@@ -1,23 +1,32 @@
-use crate::{OpenOptions, VFile, VMetadata, Vfs, VfsError, VfsResult};
-use async_std::{fs, path::Path};
+use crate::{OpenOptions, VFile, VMetadata, Vfs, VfsResult};
+use async_std::path::PathBuf;
 use async_trait::async_trait;
 
 pub struct OsFs {
-    root: String,
+    root: PathBuf,
 }
 
 impl OsFs {
     pub fn new(root: &str) -> Self {
         OsFs {
-            root: root.to_owned(),
+            root: PathBuf::from(root),
         }
+    }
+
+    fn get_path(&self, path: &str) -> PathBuf {
+        let p = if path.starts_with('/') {
+            &path[1..]
+        } else {
+            path
+        };
+        self.root.join(p)
     }
 }
 
 #[async_trait]
 impl Vfs for OsFs {
     async fn exists(&self, path: &str) -> VfsResult<bool> {
-        Ok(Path::new(path).exists().await)
+        Ok(self.get_path(path).exists().await)
     }
 
     async fn metadata(&self, path: &str) -> VfsResult<Box<dyn VMetadata>> {
