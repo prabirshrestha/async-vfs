@@ -16,12 +16,12 @@ pub trait Vfs {
     async fn exists(&self, path: &str) -> VfsResult<bool>;
     async fn metadata(&self, path: &str) -> VfsResult<Box<dyn VMetadata>>;
     async fn mkdir(&self, path: &str) -> VfsResult<()>;
+    async fn mv(&self, from: &str, to: &str) -> VfsResult<()>;
     async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Box<dyn VFile>>;
     async fn read_dir(
         &self,
         path: &str,
         skip_token: Option<String>,
     ) -> VfsResult<(Vec<Box<dyn VMetadata>>, Option<String>)>;
-    async fn remove(&self, path: &str) -> VfsResult<()>;
-    async fn rename(&self, from: &str, to: &str) -> VfsResult<()>;
+    async fn rm(&self, path: &str) -> VfsResult<()>;
 }
