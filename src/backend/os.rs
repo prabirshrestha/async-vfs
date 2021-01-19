@@ -93,6 +93,12 @@ impl Vfs for OsFs {
     }
 
     async fn rm(&self, path: &str) -> VfsResult<()> {
-        todo!()
+        let path = self.get_path(path);
+        let metadata = path.metadata().await?;
+        if metadata.is_dir() {
+            Ok(fs::remove_dir(path).await?)
+        } else {
+            Ok(fs::remove_file(path).await?)
+        }
     }
 }
