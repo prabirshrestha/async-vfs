@@ -11,3 +11,4 @@ repository = "https://github.com/prabirshrestha/async-vfs"
 
 [dependencies]
 async-trait = "0.1.42"
+thiserror = "1.0.23"

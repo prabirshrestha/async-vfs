@@ -1,11 +1,5 @@
+mod error;
 mod vfs;
 
-pub use vfs::Vfs;
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+pub use error::*;
+pub use vfs::*;
