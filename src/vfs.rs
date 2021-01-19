@@ -1,4 +1,4 @@
-use crate::VfsResult;
+use crate::{OpenOptions, VfsResult};
 use async_std::io::{Read, Seek, Write};
 use async_trait::async_trait;
 
@@ -18,7 +18,7 @@ pub trait Vfs {
     async fn exists(&self, path: &str) -> VfsResult<bool>;
     async fn metadata(&self, path: &str) -> VfsResult<Box<dyn VMetadata>>;
     async fn mkdir(&self, path: &str) -> VfsResult<()>;
-    async fn open(&self, path: &str) -> VfsResult<Box<dyn VFile>>;
+    async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Box<dyn VFile>>;
     async fn read_dir(
         &self,
         path: &str,
