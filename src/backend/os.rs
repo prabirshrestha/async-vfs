@@ -6,6 +6,12 @@ pub struct OsFs {
     root: PathBuf,
 }
 
+struct VOsMetadata {
+    path: PathBuf,
+    is_file: bool,
+    len: u64,
+}
+
 impl OsFs {
     pub fn new(root: &str) -> Self {
         OsFs {
@@ -23,6 +29,24 @@ impl OsFs {
     }
 }
 
+impl VMetadata for VOsMetadata {
+    fn name(&self) -> &str {
+        self.path.to_str().unwrap()
+    }
+
+    fn is_dir(&self) -> bool {
+        !self.is_file
+    }
+
+    fn is_file(&self) -> bool {
+        self.is_file
+    }
+
+    fn len(&self) -> u64 {
+        self.len
+    }
+}
+
 #[async_trait]
 impl Vfs for OsFs {
     async fn exists(&self, path: &str) -> VfsResult<bool> {
@@ -30,7 +54,22 @@ impl Vfs for OsFs {
     }
 
     async fn metadata(&self, path: &str) -> VfsResult<Box<dyn VMetadata>> {
-        todo!()
+        let path = self.get_path(path);
+        let metadata = path.metadata().await?;
+        let vmetadata = if metadata.is_dir() {
+            VOsMetadata {
+                is_file: false,
+                len: 0,
+                path,
+            }
+        } else {
+            VOsMetadata {
+                is_file: true,
+                len: metadata.len(),
+                path,
+            }
+        };
+        Ok(Box::new(vmetadata))
     }
 
     async fn mkdir(&self, path: &str) -> VfsResult<()> {
