@@ -81,6 +81,14 @@ impl Vfs for OsFs {
     }
 
     async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Box<dyn VFile>> {
+        let file = fs::OpenOptions::new()
+            .read(options.has_read())
+            .write(options.has_write())
+            .create(options.has_create())
+            .append(options.has_append())
+            .truncate(options.has_truncate())
+            .open(self.get_path(path))
+            .await?;
         todo!()
     }
 
