@@ -10,4 +10,5 @@ pub trait Vfs {
     async fn remove_dir(&self, path: &str) -> VfsResult<()>;
 
     async fn remove_file(&self, path: &str) -> VfsResult<()>;
+    async fn rename(&self, from: &str, to: &str) -> VfsResult<()>;
 }
