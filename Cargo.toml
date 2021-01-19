@@ -10,5 +10,6 @@ repository = "https://github.com/prabirshrestha/async-vfs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+async-std = "1.9.0"
 async-trait = "0.1.42"
 thiserror = "1.0.23"

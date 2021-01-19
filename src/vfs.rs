@@ -1,6 +1,6 @@
-use async_trait::async_trait;
-
 use crate::VfsResult;
+use async_std::io::{Read, Seek, Write};
+use async_trait::async_trait;
 
 pub trait VMetadata {
     fn is_dir(&self) -> bool;
@@ -8,10 +8,14 @@ pub trait VMetadata {
     fn len(&self) -> u64;
 }
 
+pub trait VFile: Read + Write + Seek {}
+
 #[async_trait]
 pub trait Vfs {
     async fn create_dir(&self, path: &str) -> VfsResult<()>;
     async fn remove_dir(&self, path: &str) -> VfsResult<()>;
+
+    async fn open_file(&self, path: &str) -> VfsResult<Box<dyn VFile>>;
 
     async fn remove_file(&self, path: &str) -> VfsResult<()>;
     async fn rename(&self, from: &str, to: &str) -> VfsResult<()>;
