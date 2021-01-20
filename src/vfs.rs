@@ -2,8 +2,8 @@ use crate::{OpenOptions, VfsResult};
 use async_std::io::{Read, Seek, Write};
 use async_trait::async_trait;
 
-pub trait VMetadata {
-    fn name(&self) -> &str;
+pub trait VMetadata: Sync + Send {
+    fn path(&self) -> &str;
     fn is_dir(&self) -> bool;
     fn is_file(&self) -> bool;
     fn len(&self) -> u64;

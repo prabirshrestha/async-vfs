@@ -1,4 +1,5 @@
 use crate::{OpenOptions, VFile, VMetadata, Vfs, VfsResult};
+use async_std::prelude::*;
 use async_std::{fs, path::PathBuf};
 use async_trait::async_trait;
 
@@ -30,7 +31,7 @@ impl OsFs {
 }
 
 impl VMetadata for VOsMetadata {
-    fn name(&self) -> &str {
+    fn path(&self) -> &str {
         self.path.to_str().unwrap()
     }
 
@@ -97,7 +98,30 @@ impl Vfs for OsFs {
         path: &str,
         skip_token: Option<String>,
     ) -> VfsResult<(Vec<Box<dyn VMetadata>>, Option<String>)> {
-        todo!()
+        let mut dir = fs::read_dir(".").await?;
+        let mut list: Vec<Box<dyn VMetadata>> = Vec::new();
+        while let Some(entry) = dir.next().await {
+            let entry = entry?;
+            let metadata = entry.metadata().await?;
+            let path = entry.path();
+
+            let vmetadata = if metadata.is_dir() {
+                VOsMetadata {
+                    is_file: false,
+                    len: 0,
+                    path,
+                }
+            } else {
+                VOsMetadata {
+                    is_file: true,
+                    len: metadata.len(),
+                    path,
+                }
+            };
+
+            list.push(Box::new(vmetadata));
+        }
+        Ok((list, None))
     }
 
     async fn rm(&self, path: &str) -> VfsResult<()> {
