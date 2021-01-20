@@ -6,6 +6,9 @@ pub enum VfsError {
     #[error("IO error: {0}")]
     IoError(#[from] std::io::Error),
 
+    #[error("Invalid absolute path: {path}")]
+    InvalidAbsolutePath { path: String },
+
     /// Generic error context, used for adding context to an error (like a path)
     #[error("{context}, cause: {cause}")]
     WithContext {
