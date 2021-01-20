@@ -106,6 +106,37 @@ impl Vfs for OsFs {
         Ok(self.get_raw_path(path)?.exists().await)
     }
 
+    async fn ls(
+        &self,
+        path: &str,
+        skip_token: Option<String>,
+    ) -> VfsResult<(Vec<Box<dyn VMetadata>>, Option<String>)> {
+        let mut dir = fs::read_dir(".").await?;
+        let mut list: Vec<Box<dyn VMetadata>> = Vec::new();
+        while let Some(entry) = dir.next().await {
+            let entry = entry?;
+            let metadata = entry.metadata().await?;
+            let path = entry.path();
+
+            let vmetadata = if metadata.is_dir() {
+                VOsMetadata {
+                    is_file: false,
+                    len: 0,
+                    path: self.get_vfs_path(&path)?,
+                }
+            } else {
+                VOsMetadata {
+                    is_file: true,
+                    len: metadata.len(),
+                    path: self.get_vfs_path(&path)?,
+                }
+            };
+
+            list.push(Box::new(vmetadata));
+        }
+        Ok((list, None))
+    }
+
     async fn metadata(&self, path: &str) -> VfsResult<Box<dyn VMetadata>> {
         let path = self.get_raw_path(path)?;
         let metadata = path.metadata().await?;
@@ -143,37 +174,6 @@ impl Vfs for OsFs {
             .open(self.get_raw_path(path)?)
             .await?;
         Ok(Box::new(file))
-    }
-
-    async fn read_dir(
-        &self,
-        path: &str,
-        skip_token: Option<String>,
-    ) -> VfsResult<(Vec<Box<dyn VMetadata>>, Option<String>)> {
-        let mut dir = fs::read_dir(".").await?;
-        let mut list: Vec<Box<dyn VMetadata>> = Vec::new();
-        while let Some(entry) = dir.next().await {
-            let entry = entry?;
-            let metadata = entry.metadata().await?;
-            let path = entry.path();
-
-            let vmetadata = if metadata.is_dir() {
-                VOsMetadata {
-                    is_file: false,
-                    len: 0,
-                    path: self.get_vfs_path(&path)?,
-                }
-            } else {
-                VOsMetadata {
-                    is_file: true,
-                    len: metadata.len(),
-                    path: self.get_vfs_path(&path)?,
-                }
-            };
-
-            list.push(Box::new(vmetadata));
-        }
-        Ok((list, None))
     }
 
     async fn rm(&self, path: &str) -> VfsResult<()> {
