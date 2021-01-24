@@ -13,3 +13,6 @@ repository = "https://github.com/prabirshrestha/async-vfs"
 async-std = "1.9.0"
 async-trait = "0.1.42"
 thiserror = "1.0.23"
+
+[dev-dependencies]
+async-std = { version = "1.9.0", features = ["attributes"] }
