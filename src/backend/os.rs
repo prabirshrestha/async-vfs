@@ -62,7 +62,7 @@ impl OsFs {
         }
 
         if path.starts_with(&self.root) {
-            Ok(path
+            let res = path
                 .strip_prefix(&self.root)
                 .or_else(|_| {
                     Err(VfsError::InvalidAbsolutePath {
@@ -72,8 +72,8 @@ impl OsFs {
                 .to_str()
                 .ok_or_else(|| VfsError::InvalidAbsolutePath {
                     path: pathstr.to_owned(),
-                })?
-                .to_owned())
+                })?;
+            Ok(format!("/{}", res))
         } else {
             Err(VfsError::InvalidAbsolutePath {
                 path: pathstr.to_owned(),
