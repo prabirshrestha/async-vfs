@@ -6,6 +6,7 @@ edition = "2018"
 license = "MIT"
 description = "Async Virtual File System"
 repository = "https://github.com/prabirshrestha/async-vfs"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
