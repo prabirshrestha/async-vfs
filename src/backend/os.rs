@@ -73,7 +73,7 @@ impl OsFs {
                 .ok_or_else(|| VfsError::InvalidAbsolutePath {
                     path: pathstr.to_owned(),
                 })?;
-            Ok(format!("/{}", res))
+            Ok("/".to_owned() + res)
         } else {
             Err(VfsError::InvalidAbsolutePath {
                 path: pathstr.to_owned(),
