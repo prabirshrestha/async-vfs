@@ -89,6 +89,11 @@ async fn metadata_fail_when_using_path_without_forward_slash_prefix() -> VfsResu
 async fn metadata_fail_when_include_dotdot() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
+    match vfs.metadata("../mod.rs").await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
     match vfs.metadata("/../file1a.txt").await {
         Err(_) => assert!(true),
         _ => assert!(false, "should throw Error"),
