@@ -50,3 +50,20 @@ async fn metadata_ok_for_dir() -> VfsResult<()> {
 
     Ok(())
 }
+
+#[async_std::test]
+async fn metadata_fail_for_non_existent_file() -> VfsResult<()> {
+    let vfs = OsFs::new(&data_dir());
+
+    match vfs.metadata("/nonexistent.file").await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    match vfs.metadata("/dir1/nonexistent.file").await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    Ok(())
+}
