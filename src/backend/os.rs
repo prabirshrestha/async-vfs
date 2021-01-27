@@ -1,9 +1,8 @@
-use std::{path::Component, pin::Pin};
-
 use crate::{OpenOptions, VFile, VMetadata, Vfs, VfsError, VfsResult};
 use async_std::{fs, path::PathBuf};
 use async_std::{path::Path, prelude::*};
 use async_trait::async_trait;
+use std::pin::Pin;
 
 pub struct OsFs {
     root: PathBuf,
@@ -111,7 +110,7 @@ impl Vfs for OsFs {
         path: &str,
         skip_token: Option<String>,
     ) -> VfsResult<(Vec<Box<dyn VMetadata>>, Option<String>)> {
-        let mut dir = fs::read_dir(".").await?;
+        let mut dir = fs::read_dir(self.get_raw_path(path)?).await?;
         let mut list: Vec<Box<dyn VMetadata>> = Vec::new();
         while let Some(entry) = dir.next().await {
             let entry = entry?;
