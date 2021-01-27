@@ -1,3 +1,5 @@
+use std::pin::Pin;
+
 use crate::{OpenOptions, VfsResult};
 use async_std::io::{Read, Seek, Write};
 use async_trait::async_trait;
@@ -23,6 +25,6 @@ pub trait Vfs {
     async fn metadata(&self, path: &str) -> VfsResult<Box<dyn VMetadata>>;
     async fn mkdir(&self, path: &str) -> VfsResult<()>;
     async fn mv(&self, from: &str, to: &str) -> VfsResult<()>;
-    async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Box<dyn VFile>>;
+    async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Pin<Box<dyn VFile>>>;
     async fn rm(&self, path: &str) -> VfsResult<()>;
 }

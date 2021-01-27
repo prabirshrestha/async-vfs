@@ -1,4 +1,4 @@
-use std::path::Component;
+use std::{path::Component, pin::Pin};
 
 use crate::{OpenOptions, VFile, VMetadata, Vfs, VfsError, VfsResult};
 use async_std::{fs, path::PathBuf};
@@ -164,7 +164,7 @@ impl Vfs for OsFs {
         Ok(fs::rename(from, to).await?)
     }
 
-    async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Box<dyn VFile>> {
+    async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Pin<Box<dyn VFile>>> {
         let file = fs::OpenOptions::new()
             .read(options.has_read())
             .write(options.has_write())
@@ -173,7 +173,7 @@ impl Vfs for OsFs {
             .truncate(options.has_truncate())
             .open(self.get_raw_path(path)?)
             .await?;
-        Ok(Box::new(file))
+        Ok(Pin::from(Box::new(file)))
     }
 
     async fn rm(&self, path: &str) -> VfsResult<()> {
