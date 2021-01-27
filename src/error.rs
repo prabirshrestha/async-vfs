@@ -9,6 +9,9 @@ pub enum VfsError {
     #[error("Invalid absolute path: {path}")]
     InvalidAbsolutePath { path: String },
 
+    #[error("Invalid file: {path}")]
+    InvalidFile { path: String },
+
     /// Generic error context, used for adding context to an error (like a path)
     #[error("{context}, cause: {cause}")]
     WithContext {

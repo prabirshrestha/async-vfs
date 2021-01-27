@@ -30,3 +30,20 @@ async fn open_read_only() -> VfsResult<()> {
 
     Ok(())
 }
+
+#[async_std::test]
+async fn open_fail_for_dir() -> VfsResult<()> {
+    let vfs = OsFs::new(&data_dir());
+
+    match vfs.open("/dir1", OpenOptions::new().read(true)).await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw error"),
+    }
+
+    match vfs.open("/dir2/dir3", OpenOptions::new().read(true)).await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw error"),
+    }
+
+    Ok(())
+}
