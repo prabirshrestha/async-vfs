@@ -1,11 +1,6 @@
+use crate::testutils::data_dir;
 use async_vfs::backend::OsFs;
 use async_vfs::*;
-
-const CARGO_MANFIFST_DIR: &'static str = env!("CARGO_MANIFEST_DIR");
-
-fn data_dir() -> String {
-    return CARGO_MANFIFST_DIR.to_owned() + "/tests/data";
-}
 
 #[async_std::test]
 async fn metadata_ok_for_file() -> VfsResult<()> {

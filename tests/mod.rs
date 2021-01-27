@@ -1,3 +1,5 @@
+pub mod testutils;
+
 mod backend {
     mod os {
         mod exists_tests;
