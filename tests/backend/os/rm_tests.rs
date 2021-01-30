@@ -74,6 +74,23 @@ async fn rm_fail_for_non_existent_file() -> VfsResult<()> {
 }
 
 #[async_std::test]
+async fn rm_fail_when_using_path_without_forward_slash_prefix() -> VfsResult<()> {
+    let vfs = OsFs::new(&data_dir());
+
+    match vfs.rm("file1a.txt").await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    match vfs.rm("dir1/filed1a.txt").await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    Ok(())
+}
+
+#[async_std::test]
 async fn rm_fail_when_include_dotdot() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
