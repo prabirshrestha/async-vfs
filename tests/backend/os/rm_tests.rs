@@ -72,3 +72,25 @@ async fn rm_fail_for_non_existent_file() -> VfsResult<()> {
 
     Ok(())
 }
+
+#[async_std::test]
+async fn rm_fail_when_include_dotdot() -> VfsResult<()> {
+    let vfs = OsFs::new(&data_dir());
+
+    match vfs.rm("../mod.rs").await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    match vfs.metadata("/../file1a.txt").await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    match vfs.metadata("/dir1/../file1a.txt").await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    Ok(())
+}
