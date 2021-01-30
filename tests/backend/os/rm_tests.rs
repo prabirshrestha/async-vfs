@@ -63,5 +63,12 @@ async fn rm_fail_for_non_existent_file() -> VfsResult<()> {
         _ => assert!(false, "should throw Error"),
     }
 
+    let path = "/dir1/rm_non_existent.file";
+    assert_eq!(vfs.exists(path).await?, false);
+    match vfs.rm(path).await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
     Ok(())
 }
