@@ -165,6 +165,7 @@ impl Vfs for OsFs {
 
     async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Pin<Box<dyn VFile>>> {
         let raw_path = self.get_raw_path(path)?;
+        println!("***{}", raw_path.to_str().unwrap());
         if raw_path.is_dir().await {
             return Err(VfsError::InvalidFile {
                 path: path.to_owned(),

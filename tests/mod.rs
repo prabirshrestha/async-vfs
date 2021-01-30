@@ -5,5 +5,6 @@ mod backend {
         mod exists_tests;
         mod metadata_tests;
         mod open_tests;
+        mod rm_tests;
     }
 }
