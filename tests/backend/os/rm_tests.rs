@@ -3,7 +3,7 @@ use async_vfs::backend::OsFs;
 use async_vfs::*;
 
 #[async_std::test]
-async fn rm_file_tests() -> VfsResult<()> {
+async fn rm_ok_for_file() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
     let path = "/rm_empty1.txt";
@@ -30,7 +30,7 @@ async fn rm_file_tests() -> VfsResult<()> {
 }
 
 #[async_std::test]
-async fn rm_dir_tests() -> VfsResult<()> {
+async fn rm_ok_for_empty_dir() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
     let path = "/rm_dir1";
@@ -48,6 +48,20 @@ async fn rm_dir_tests() -> VfsResult<()> {
     assert_eq!(vfs.metadata(path).await?.is_dir(), true);
     vfs.rm(path).await?;
     assert_eq!(vfs.exists(path).await?, false);
+
+    Ok(())
+}
+
+#[async_std::test]
+async fn rm_fail_for_non_existent_file() -> VfsResult<()> {
+    let vfs = OsFs::new(&data_dir());
+
+    let path = "/rm_non_existent.file";
+    assert_eq!(vfs.exists(path).await?, false);
+    match vfs.rm(path).await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
 
     Ok(())
 }

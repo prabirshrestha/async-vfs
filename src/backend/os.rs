@@ -108,7 +108,7 @@ impl Vfs for OsFs {
     async fn ls(
         &self,
         path: &str,
-        skip_token: Option<String>,
+        _skip_token: Option<String>,
     ) -> VfsResult<(Vec<Box<dyn VMetadata>>, Option<String>)> {
         let mut dir = fs::read_dir(self.get_raw_path(path)?).await?;
         let mut list: Vec<Box<dyn VMetadata>> = Vec::new();
@@ -165,7 +165,6 @@ impl Vfs for OsFs {
 
     async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Pin<Box<dyn VFile>>> {
         let raw_path = self.get_raw_path(path)?;
-        println!("***{}", raw_path.to_str().unwrap());
         if raw_path.is_dir().await {
             return Err(VfsError::InvalidFile {
                 path: path.to_owned(),
