@@ -10,6 +10,7 @@ async fn metadata_ok_for_file() -> VfsResult<()> {
     assert_eq!(metadata.is_file(), true);
     assert_eq!(metadata.is_dir(), false);
     assert_eq!(metadata.len(), 27);
+
     assert_eq!(metadata.path(), "/file1a.txt");
 
     let metadata = vfs.metadata("/dir1/empty.txt").await?;

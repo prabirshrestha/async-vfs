@@ -47,3 +47,46 @@ async fn open_fail_for_dir() -> VfsResult<()> {
 
     Ok(())
 }
+
+#[async_std::test]
+async fn open_create_write_new_file() -> VfsResult<()> {
+    let vfs = OsFs::new(&data_dir());
+
+    let path = "/open_empty1.txt";
+    assert_eq!(vfs.exists(path).await?, false);
+    {
+        // note: move file to block for explict close via drop
+        let mut file = vfs
+            .open(path, OpenOptions::new().create(true).write(true))
+            .await?;
+        assert_eq!(vfs.exists(path).await?, true);
+        file.flush().await?;
+    }
+    let metadata = vfs.metadata(path).await?;
+    assert_eq!(metadata.is_file(), true);
+    assert_eq!(metadata.is_dir(), false);
+    assert_eq!(metadata.len(), 0);
+    assert_eq!(metadata.path(), path);
+    vfs.rm(path).await?;
+    assert_eq!(vfs.exists(path).await?, false);
+
+    let path = "/dir1/open_empty2.txt";
+    assert_eq!(vfs.exists(path).await?, false);
+    {
+        // note: move file to block for explict close via drop
+        let mut file = vfs
+            .open(path, OpenOptions::new().create(true).write(true))
+            .await?;
+        assert_eq!(vfs.exists(path).await?, true);
+        file.flush().await?;
+    }
+    let metadata = vfs.metadata(path).await?;
+    assert_eq!(metadata.is_file(), true);
+    assert_eq!(metadata.is_dir(), false);
+    assert_eq!(metadata.len(), 0);
+    assert_eq!(metadata.path(), path);
+    vfs.rm(path).await?;
+    assert_eq!(vfs.exists(path).await?, false);
+
+    Ok(())
+}
