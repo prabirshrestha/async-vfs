@@ -34,6 +34,16 @@ async fn mv_empty_file() -> VfsResult<()> {
 }
 
 #[async_std::test]
+async fn mv_dir() -> VfsResult<()> {
+    let vfs = OsFs::new(&data_dir());
+    assert_eq!(vfs.exists("/dir1/dir2").await?, false);
+    vfs.mv("/dir2", "/dir1/dir2").await?;
+    assert_eq!(vfs.exists("/dir1/dir2").await?, true);
+    vfs.mv("/dir1/dir2", "/dir2").await?;
+    Ok(())
+}
+
+#[async_std::test]
 async fn mv_fail_when_using_path_without_forward_slash_prefix() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
