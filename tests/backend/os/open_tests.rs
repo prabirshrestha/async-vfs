@@ -185,6 +185,41 @@ async fn open_append_ok() -> VfsResult<()> {
 }
 
 #[async_std::test]
+async fn open_truncate_ok() -> VfsResult<()> {
+    let vfs = OsFs::new(&data_dir());
+
+    let path = "/open_truncate1.txt";
+    assert_eq!(vfs.exists(path).await?, false);
+    {
+        // note: move file to block for explicit close via drop
+        let mut file = vfs
+            .open(path, OpenOptions::new().create(true).write(true))
+            .await?;
+        file.write(b"Hello").await?;
+    }
+    assert_eq!(vfs.exists(path).await?, true);
+    {
+        let mut file = vfs
+            .open(path, OpenOptions::new().write(true).truncate(true))
+            .await?;
+        file.write(b" World").await?;
+    }
+
+    let metadata = vfs.metadata(path).await?;
+    assert_eq!(metadata.is_file(), true);
+    assert_eq!(metadata.is_dir(), false);
+    assert_eq!(metadata.len(), 6);
+
+    let mut buf = String::new();
+    let mut file = vfs.open(path, OpenOptions::new().read(true)).await?;
+    file.read_to_string(&mut buf).await?;
+    assert_eq!(&buf, " World");
+
+    vfs.rm(path).await?;
+    Ok(())
+}
+
+#[async_std::test]
 async fn open_fail_when_using_path_without_forward_slash_prefix() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
