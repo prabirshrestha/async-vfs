@@ -160,7 +160,7 @@ impl Vfs for OsFs {
     }
 
     async fn mv(&self, from: &str, to: &str) -> VfsResult<()> {
-        Ok(fs::rename(from, to).await?)
+        Ok(fs::rename(self.get_raw_path(from)?, self.get_raw_path(to)?).await?)
     }
 
     async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Pin<Box<dyn VFile>>> {
