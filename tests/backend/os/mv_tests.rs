@@ -32,3 +32,42 @@ async fn mv_empty_file() -> VfsResult<()> {
 
     Ok(())
 }
+
+#[async_std::test]
+async fn mv_fail_when_using_path_without_forward_slash_prefix() -> VfsResult<()> {
+    let vfs = OsFs::new(&data_dir());
+
+    match vfs.mv("file1a.txt", "file1amv.txt").await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    match vfs.mv("dir1/filed1a.txt", "dir1/filed1amv.txt").await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    Ok(())
+}
+
+#[async_std::test]
+async fn mv_fail_when_include_dotdot() -> VfsResult<()> {
+    let vfs = OsFs::new(&data_dir());
+
+    match vfs.mv("../mod.rs", "../mod2.rs").await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    match vfs.mv("/../file1a.txt", "/../file1amv.txt").await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    match vfs.mv("/dir1/../file1a.txt", "/dir1/../file1amv.txt").await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    Ok(())
+}
