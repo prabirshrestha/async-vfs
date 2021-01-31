@@ -56,12 +56,10 @@ async fn open_create_write_new_file() -> VfsResult<()> {
     assert_eq!(vfs.exists(path).await?, false);
     {
         // note: move file to block for explict close via drop
-        let mut file = vfs
-            .open(path, OpenOptions::new().create(true).write(true))
+        vfs.open(path, OpenOptions::new().create(true).write(true))
             .await?;
-        assert_eq!(vfs.exists(path).await?, true);
-        file.flush().await?;
     }
+    assert_eq!(vfs.exists(path).await?, true);
     let metadata = vfs.metadata(path).await?;
     assert_eq!(metadata.is_file(), true);
     assert_eq!(metadata.is_dir(), false);
@@ -74,12 +72,10 @@ async fn open_create_write_new_file() -> VfsResult<()> {
     assert_eq!(vfs.exists(path).await?, false);
     {
         // note: move file to block for explict close via drop
-        let mut file = vfs
-            .open(path, OpenOptions::new().create(true).write(true))
+        vfs.open(path, OpenOptions::new().create(true).write(true))
             .await?;
-        assert_eq!(vfs.exists(path).await?, true);
-        file.flush().await?;
     }
+    assert_eq!(vfs.exists(path).await?, true);
     let metadata = vfs.metadata(path).await?;
     assert_eq!(metadata.is_file(), true);
     assert_eq!(metadata.is_dir(), false);
@@ -87,6 +83,37 @@ async fn open_create_write_new_file() -> VfsResult<()> {
     assert_eq!(metadata.path(), path);
     vfs.rm(path).await?;
     assert_eq!(vfs.exists(path).await?, false);
+
+    Ok(())
+}
+
+#[async_std::test]
+async fn open_write_new_file() -> VfsResult<()> {
+    let vfs = OsFs::new(&data_dir());
+
+    let path = "/open_empty_new_file.txt";
+    assert_eq!(vfs.exists(path).await?, false);
+    {
+        // note: move file to block for explict close via drop
+        let mut file = vfs
+            .open(path, OpenOptions::new().create(true).write(true))
+            .await?;
+        file.write(b"Hello World").await?;
+    }
+    assert_eq!(vfs.exists(path).await?, true);
+    let metadata = vfs.metadata(path).await?;
+    assert_eq!(metadata.is_file(), true);
+    assert_eq!(metadata.is_dir(), false);
+    assert_eq!(metadata.len(), 11);
+    assert_eq!(metadata.path(), path);
+
+    let mut file = vfs.open(path, OpenOptions::new().read(true)).await?;
+    let mut buf = vec![0; 1024];
+    let len = file.read(&mut buf).await?;
+    assert_eq!(len, 11);
+    assert_eq!(&buf[0..len], b"Hello World");
+
+    vfs.rm(path).await?;
 
     Ok(())
 }
