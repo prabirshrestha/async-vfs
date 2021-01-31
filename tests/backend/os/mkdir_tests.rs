@@ -29,3 +29,42 @@ async fn mkdir_ok() -> VfsResult<()> {
     vfs.rm(path).await?;
     Ok(())
 }
+
+#[async_std::test]
+async fn mkdir_fail_when_using_path_without_forward_slash_prefix() -> VfsResult<()> {
+    let vfs = OsFs::new(&data_dir());
+
+    match vfs.mkdir("mkdir1").await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    match vfs.mkdir("dir1/mkdir2").await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    Ok(())
+}
+
+#[async_std::test]
+async fn mkdir_fail_when_include_dotdot() -> VfsResult<()> {
+    let vfs = OsFs::new(&data_dir());
+
+    match vfs.mkdir("../mkdirdot1").await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    match vfs.mkdir("/../mkdirdot2").await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    match vfs.mkdir("/dir1/../mkdirdot3").await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    Ok(())
+}

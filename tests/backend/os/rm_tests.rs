@@ -99,12 +99,12 @@ async fn rm_fail_when_include_dotdot() -> VfsResult<()> {
         _ => assert!(false, "should throw Error"),
     }
 
-    match vfs.metadata("/../file1a.txt").await {
+    match vfs.rm("/../file1a.txt").await {
         Err(_) => assert!(true),
         _ => assert!(false, "should throw Error"),
     }
 
-    match vfs.metadata("/dir1/../file1a.txt").await {
+    match vfs.rm("/dir1/../file1a.txt").await {
         Err(_) => assert!(true),
         _ => assert!(false, "should throw Error"),
     }
