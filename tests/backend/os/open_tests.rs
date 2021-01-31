@@ -90,3 +90,31 @@ async fn open_create_write_new_file() -> VfsResult<()> {
 
     Ok(())
 }
+
+#[async_std::test]
+async fn open_fail_when_include_dotdot() -> VfsResult<()> {
+    let vfs = OsFs::new(&data_dir());
+
+    match vfs.open("../mod.rs", OpenOptions::new().read(true)).await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    match vfs
+        .open("/../file1a.txt", OpenOptions::new().read(true))
+        .await
+    {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    match vfs
+        .open("/dir1/../file1a.txt", OpenOptions::new().read(true))
+        .await
+    {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    Ok(())
+}
