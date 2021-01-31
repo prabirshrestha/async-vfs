@@ -1,0 +1,40 @@
+use crate::testutils::data_dir;
+use async_vfs::backend::OsFs;
+use async_vfs::*;
+
+#[async_std::test]
+async fn ls_root() -> VfsResult<()> {
+    let vfs = OsFs::new(&data_dir());
+
+    let (entries, skip_token) = vfs.ls("/", None).await?;
+    assert_eq!(skip_token, None);
+    assert_eq!(entries.len(), 4);
+
+    for entry in entries {
+        match entry.path() {
+            "/dir1" => {
+                assert_eq!(entry.is_dir(), true);
+                assert_eq!(entry.is_file(), false);
+                assert_eq!(entry.len(), 0);
+            }
+            "/dir2" => {
+                assert_eq!(entry.is_dir(), true);
+                assert_eq!(entry.is_file(), false);
+                assert_eq!(entry.len(), 0);
+            }
+            "/file1a.txt" => {
+                assert_eq!(entry.is_dir(), false);
+                assert_eq!(entry.is_file(), true);
+                assert_eq!(entry.len(), 27);
+            }
+            "/file1b.txt" => {
+                assert_eq!(entry.is_dir(), false);
+                assert_eq!(entry.is_file(), true);
+                assert_eq!(entry.len(), 0);
+            }
+            _ => {}
+        }
+    }
+
+    Ok(())
+}
