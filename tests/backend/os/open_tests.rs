@@ -92,6 +92,26 @@ async fn open_create_write_new_file() -> VfsResult<()> {
 }
 
 #[async_std::test]
+async fn open_fail_when_using_path_without_forward_slash_prefix() -> VfsResult<()> {
+    let vfs = OsFs::new(&data_dir());
+
+    match vfs.open("file1a.txt", OpenOptions::new().read(true)).await {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    match vfs
+        .open("dir1/filed1a.txt", OpenOptions::new().read(true))
+        .await
+    {
+        Err(_) => assert!(true),
+        _ => assert!(false, "should throw Error"),
+    }
+
+    Ok(())
+}
+
+#[async_std::test]
 async fn open_fail_when_include_dotdot() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
