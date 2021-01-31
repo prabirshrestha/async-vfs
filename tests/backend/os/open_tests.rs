@@ -49,7 +49,7 @@ async fn open_fail_for_dir() -> VfsResult<()> {
 }
 
 #[async_std::test]
-async fn open_create_write_new_file() -> VfsResult<()> {
+async fn open_create_write_new_empty_file() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
     let path = "/open_empty1.txt";
@@ -88,7 +88,7 @@ async fn open_create_write_new_file() -> VfsResult<()> {
 }
 
 #[async_std::test]
-async fn open_write_new_file() -> VfsResult<()> {
+async fn open_create_write_new_file_with_contents() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
     let path = "/open_new_file1.txt";
@@ -98,7 +98,7 @@ async fn open_write_new_file() -> VfsResult<()> {
         let mut file = vfs
             .open(path, OpenOptions::new().create(true).write(true))
             .await?;
-        file.write(b"Hello \nWorld").await?;
+        file.write(b"Hello \nWorld").await?; // test ASCII
     }
     assert_eq!(vfs.exists(path).await?, true);
     let metadata = vfs.metadata(path).await?;
@@ -125,7 +125,7 @@ async fn open_write_new_file() -> VfsResult<()> {
         let mut file = vfs
             .open(path, OpenOptions::new().create(true).write(true))
             .await?;
-        file.write("Hello \nWorld\nनमस्ते".as_bytes()).await?;
+        file.write("Hello \nWorld\nनमस्ते".as_bytes()).await?; // test UTF-8
     }
     assert_eq!(vfs.exists(path).await?, true);
     let metadata = vfs.metadata(path).await?;
