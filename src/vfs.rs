@@ -15,7 +15,7 @@ pub trait VFile: Read + Write + Seek {}
 impl<T> VFile for T where T: Read + Write + Seek {}
 
 #[async_trait]
-pub trait Vfs {
+pub trait Vfs: Sync + Send {
     async fn exists(&self, path: &str) -> VfsResult<bool>;
     async fn ls(
         &self,
