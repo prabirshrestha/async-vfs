@@ -1,8 +1,6 @@
+use crate::{async_trait, OpenOptions, VfsResult};
+use futures_lite::{AsyncRead, AsyncSeek, AsyncWrite};
 use std::pin::Pin;
-
-use crate::{OpenOptions, VfsResult};
-use async_std::io::{Read, Seek, Write};
-use async_trait::async_trait;
 
 pub trait VMetadata: Sync + Send {
     fn path(&self) -> &str;
@@ -11,8 +9,8 @@ pub trait VMetadata: Sync + Send {
     fn len(&self) -> u64;
 }
 
-pub trait VFile: Read + Write + Seek {}
-impl<T> VFile for T where T: Read + Write + Seek {}
+pub trait VFile: AsyncRead + AsyncWrite + AsyncSeek {}
+impl<T> VFile for T where T: AsyncRead + AsyncWrite + AsyncSeek {}
 
 #[async_trait]
 pub trait Vfs: Sync + Send {
