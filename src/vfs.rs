@@ -1,4 +1,4 @@
-use crate::{async_trait, OpenOptions, VfsResult};
+use crate::{async_trait, OpenOptions, VfsError, VfsResult};
 use futures_lite::{AsyncRead, AsyncSeek, AsyncWrite};
 use std::pin::Pin;
 
@@ -14,21 +14,25 @@ impl<T> VFile for T where T: AsyncRead + AsyncWrite + AsyncSeek {}
 
 #[async_trait]
 pub trait Vfs: Sync + Send {
+    /// Returns true if the path points at an existing entity.
     async fn exists(&self, path: &str) -> VfsResult<bool> {
         match self.metadata(path).await {
             Ok(_) => Ok(true),
             Err(err) => match err {
-                crate::VfsError::NotFound { path: _ } => Ok(false),
+                VfsError::NotFound { path: _ } => Ok(false),
                 _ => Err(err),
             },
         }
     }
+
     async fn ls(
         &self,
         path: &str,
         skip_token: Option<String>,
     ) -> VfsResult<(Vec<Box<dyn VMetadata>>, Option<String>)>;
+
     async fn metadata(&self, path: &str) -> VfsResult<Box<dyn VMetadata>>;
+
     async fn mkdir(&self, path: &str) -> VfsResult<()>;
     async fn mv(&self, from: &str, to: &str) -> VfsResult<()>;
     async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Pin<Box<dyn VFile>>>;
