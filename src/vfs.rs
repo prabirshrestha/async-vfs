@@ -14,7 +14,15 @@ impl<T> VFile for T where T: AsyncRead + AsyncWrite + AsyncSeek {}
 
 #[async_trait]
 pub trait Vfs: Sync + Send {
-    async fn exists(&self, path: &str) -> VfsResult<bool>;
+    async fn exists(&self, path: &str) -> VfsResult<bool> {
+        match self.metadata(path).await {
+            Ok(_) => Ok(true),
+            Err(err) => match err {
+                crate::VfsError::NotFound { path: _ } => Ok(false),
+                _ => Err(err),
+            },
+        }
+    }
     async fn ls(
         &self,
         path: &str,
