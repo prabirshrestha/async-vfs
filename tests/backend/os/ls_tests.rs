@@ -1,3 +1,4 @@
+/*
 use crate::testutils::data_dir;
 use async_vfs::backend::OsFs;
 use async_vfs::*;
@@ -104,3 +105,4 @@ async fn ls_fail_when_include_dotdot() -> VfsResult<()> {
 
     Ok(())
 }
+*/
