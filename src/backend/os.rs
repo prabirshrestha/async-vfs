@@ -1,4 +1,4 @@
-use crate::backend::fs_shims::{Path, PathBuf};
+use crate::backend::fs_shims::{fs, Path, PathBuf};
 use crate::{async_trait, VMetadata, Vfs, VfsError, VfsResult};
 
 pub struct OsFs {
@@ -161,10 +161,10 @@ impl Vfs for OsFs {
         Ok(Box::new(vmetadata))
     }
 
+    async fn mkdir(&self, path: &str) -> VfsResult<()> {
+        Ok(fs::create_dir(self.get_raw_path(path)?).await?)
+    }
     /*
-        async fn mkdir(&self, path: &str) -> VfsResult<()> {
-            Ok(fs::create_dir(self.get_raw_path(path)?).await?)
-        }
 
         async fn mv(&self, from: &str, to: &str) -> VfsResult<()> {
             Ok(fs::rename(self.get_raw_path(from)?, self.get_raw_path(to)?).await?)
