@@ -187,15 +187,22 @@ impl Vfs for OsFs {
                 .await?;
             Ok(Pin::from(Box::new(file)))
         }
-
-        async fn rm(&self, path: &str) -> VfsResult<()> {
-            let path = self.get_raw_path(path)?;
-            let metadata = path.metadata().await?;
-            if metadata.is_dir() {
-                Ok(fs::remove_dir(path).await?)
-            } else {
-                Ok(fs::remove_file(path).await?)
-            }
-        }
     */
+
+    async fn rm(&self, path: &str) -> VfsResult<()> {
+        let path = self.get_raw_path(path)?;
+
+        #[cfg(feature = "runtime-async-std")]
+        let metadata = path.metadata().await?;
+        #[cfg(feature = "runtime-tokio")]
+        let metadata = tokio::fs::metadata(&path).await?;
+        #[cfg(feature = "runtime-smol")]
+        let metadata = smol::fs::metadata(&path).await?;
+
+        if metadata.is_dir() {
+            Ok(fs::remove_dir(path).await?)
+        } else {
+            Ok(fs::remove_file(path).await?)
+        }
+    }
 }

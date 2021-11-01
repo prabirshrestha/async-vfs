@@ -40,6 +40,6 @@ pub trait Vfs: Sync + Send {
     /*
     async fn mv(&self, from: &str, to: &str) -> VfsResult<()>;
     async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Pin<Box<dyn VFile>>>;
-    async fn rm(&self, path: &str) -> VfsResult<()>;
     */
+    async fn rm(&self, path: &str) -> VfsResult<()>;
 }
