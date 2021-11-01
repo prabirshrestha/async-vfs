@@ -1,6 +1,6 @@
-use crate::{async_trait, OpenOptions, VfsError, VfsResult};
+use crate::{async_trait, VfsError, VfsResult};
 use futures_lite::{AsyncRead, AsyncSeek, AsyncWrite};
-use std::pin::Pin;
+use std::io::ErrorKind;
 
 pub trait VMetadata: Sync + Send {
     fn path(&self) -> &str;
@@ -18,10 +18,11 @@ pub trait Vfs: Sync + Send {
     async fn exists(&self, path: &str) -> VfsResult<bool> {
         match self.metadata(path).await {
             Ok(_) => Ok(true),
-            Err(err) => match err {
-                VfsError::NotFound { path: _ } => Ok(false),
-                _ => Err(err),
+            Err(VfsError::IoError(err)) => match &err.kind() {
+                ErrorKind::NotFound => Ok(false),
+                _ => Err(VfsError::IoError(err)),
             },
+            Err(e) => Err(e),
         }
     }
 

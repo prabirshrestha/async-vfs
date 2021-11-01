@@ -12,9 +12,6 @@ pub enum VfsError {
     #[error("Invalid file: {path}")]
     InvalidFile { path: String },
 
-    #[error("Not found: {path}")]
-    NotFound { path: String },
-
     /// Generic error context, used for adding context to an error (like a path)
     #[error("{context}, cause: {cause}")]
     WithContext {
