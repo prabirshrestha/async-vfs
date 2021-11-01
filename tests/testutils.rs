@@ -9,3 +9,6 @@ pub(crate) use async_std::test as async_test;
 
 #[cfg(feature = "runtime-smol")]
 pub(crate) use smol_potat::test as async_test;
+
+#[cfg(feature = "runtime-tokio")]
+pub(crate) use tokio::test as async_test;

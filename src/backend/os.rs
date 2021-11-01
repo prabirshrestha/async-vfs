@@ -138,10 +138,12 @@ impl Vfs for OsFs {
     async fn metadata(&self, path: &str) -> VfsResult<Box<dyn VMetadata>> {
         let path = self.get_raw_path(path)?;
 
-        #[cfg(feature = "runtime-smol")]
-        let metadata = smol::fs::metadata(&path).await?;
         #[cfg(feature = "runtime-async-std")]
         let metadata = path.metadata().await?;
+        #[cfg(feature = "runtime-tokio")]
+        let metadata = tokio::fs::metadata(&path).await?;
+        #[cfg(feature = "runtime-smol")]
+        let metadata = smol::fs::metadata(&path).await?;
 
         let vmetadata = if metadata.is_dir() {
             VOsMetadata {
