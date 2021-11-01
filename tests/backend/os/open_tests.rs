@@ -1,10 +1,9 @@
-/*
-use crate::testutils::data_dir;
+use crate::testutils::{async_test, data_dir};
 use async_std::prelude::*;
 use async_vfs::backend::OsFs;
 use async_vfs::*;
 
-#[async_std::test]
+#[async_test]
 async fn open_read_only() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -32,7 +31,8 @@ async fn open_read_only() -> VfsResult<()> {
     Ok(())
 }
 
-#[async_std::test]
+/*
+#[async_test]
 async fn open_fail_for_dir() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -48,8 +48,9 @@ async fn open_fail_for_dir() -> VfsResult<()> {
 
     Ok(())
 }
+*/
 
-#[async_std::test]
+#[async_test]
 async fn open_create_write_new_empty_file() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -88,7 +89,7 @@ async fn open_create_write_new_empty_file() -> VfsResult<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[async_test]
 async fn open_create_write_new_file_with_contents() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -149,7 +150,7 @@ async fn open_create_write_new_file_with_contents() -> VfsResult<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[async_test]
 async fn open_append_ok() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -185,7 +186,7 @@ async fn open_append_ok() -> VfsResult<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[async_test]
 async fn open_truncate_ok() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -220,7 +221,7 @@ async fn open_truncate_ok() -> VfsResult<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[async_test]
 async fn open_fail_when_using_path_without_forward_slash_prefix() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -240,7 +241,7 @@ async fn open_fail_when_using_path_without_forward_slash_prefix() -> VfsResult<(
     Ok(())
 }
 
-#[async_std::test]
+#[async_test]
 async fn open_fail_when_include_dotdot() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -267,4 +268,3 @@ async fn open_fail_when_include_dotdot() -> VfsResult<()> {
 
     Ok(())
 }
-*/

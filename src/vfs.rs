@@ -1,6 +1,6 @@
-use crate::{async_trait, VfsError, VfsResult};
+use crate::{async_trait, OpenOptions, VfsError, VfsResult};
 use futures_lite::{AsyncRead, AsyncSeek, AsyncWrite};
-use std::io::ErrorKind;
+use std::{io::ErrorKind, pin::Pin};
 
 pub trait VMetadata: Sync + Send {
     fn path(&self) -> &str;
@@ -38,8 +38,6 @@ pub trait Vfs: Sync + Send {
 
     async fn mkdir(&self, path: &str) -> VfsResult<()>;
     async fn mv(&self, from: &str, to: &str) -> VfsResult<()>;
-    /*
     async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Pin<Box<dyn VFile>>>;
-    */
     async fn rm(&self, path: &str) -> VfsResult<()>;
 }

@@ -1,5 +1,9 @@
-use crate::backend::fs_shims::{fs, Path, PathBuf};
-use crate::{async_trait, VMetadata, Vfs, VfsError, VfsResult};
+use crate::backend::fs_shims::{fs, File, Path, PathBuf};
+use crate::{async_trait, OpenOptions, VFile, VMetadata, Vfs, VfsError, VfsResult};
+use std::pin::Pin;
+
+#[cfg(feature = "runtime-tokio")]
+use tokio::prelude::{AsyncRead, AsyncWrite, Future};
 
 pub struct OsFs {
     root: PathBuf,
@@ -168,26 +172,21 @@ impl Vfs for OsFs {
     async fn mv(&self, from: &str, to: &str) -> VfsResult<()> {
         Ok(fs::rename(self.get_raw_path(from)?, self.get_raw_path(to)?).await?)
     }
-    /*
 
-        async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Pin<Box<dyn VFile>>> {
-            let raw_path = self.get_raw_path(path)?;
-            if raw_path.is_dir().await {
-                return Err(VfsError::InvalidFile {
-                    path: path.to_owned(),
-                });
-            }
-            let file = fs::OpenOptions::new()
-                .read(options.has_read())
-                .write(options.has_write())
-                .create(options.has_create())
-                .append(options.has_append())
-                .truncate(options.has_truncate())
-                .open(raw_path)
-                .await?;
-            Ok(Pin::from(Box::new(file)))
-        }
-    */
+    async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Pin<Box<dyn VFile>>> {
+        let raw_path = self.get_raw_path(path)?;
+
+        let file = fs::OpenOptions::new()
+            .read(options.has_read())
+            .write(options.has_write())
+            .create(options.has_create())
+            .append(options.has_append())
+            .truncate(options.has_truncate())
+            .open(raw_path)
+            .await?;
+
+        Ok(Pin::from(Box::new(file)))
+    }
 
     async fn rm(&self, path: &str) -> VfsResult<()> {
         let path = self.get_raw_path(path)?;

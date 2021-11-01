@@ -19,6 +19,7 @@ async fn mkdir_ok() -> VfsResult<()> {
 
     let path = "/dir2/mkdir2";
     assert_eq!(vfs.exists(path).await?, false);
+    vfs.mkdir("/dir2").await?;
     vfs.mkdir(path).await?;
     assert_eq!(vfs.exists(path).await?, true);
     let metadata = vfs.metadata(path).await?;
@@ -27,6 +28,7 @@ async fn mkdir_ok() -> VfsResult<()> {
     assert_eq!(metadata.len(), 0);
     assert_eq!(metadata.path(), "/dir2/mkdir2");
     vfs.rm(path).await?;
+    vfs.rm("/dir2").await?;
     Ok(())
 }
 
