@@ -1,5 +1,6 @@
-use crate::backend::fs_shims::{fs, Path, PathBuf};
+use crate::backend::fs_shims::{fs, read_dir, Path, PathBuf};
 use crate::{async_trait, OpenOptions, VFile, VMetadata, Vfs, VfsError, VfsResult};
+use futures_lite::StreamExt;
 use std::pin::Pin;
 
 pub struct OsFs {
@@ -99,42 +100,37 @@ impl VMetadata for VOsMetadata {
 
 #[async_trait]
 impl Vfs for OsFs {
-    /*
-    async fn exists(&self, path: &str) -> VfsResult<bool> {
-        Ok(self.get_raw_path(path)?.exists().await)
-    }
+    async fn ls(
+        &self,
+        path: &str,
+        _skip_token: Option<String>,
+    ) -> VfsResult<(Vec<Box<dyn VMetadata>>, Option<String>)> {
+        let mut dir = read_dir(self.get_raw_path(path)?).await?;
 
-        async fn ls(
-            &self,
-            path: &str,
-            _skip_token: Option<String>,
-        ) -> VfsResult<(Vec<Box<dyn VMetadata>>, Option<String>)> {
-            let mut dir = fs::read_dir(self.get_raw_path(path)?).await?;
-            let mut list: Vec<Box<dyn VMetadata>> = Vec::new();
-            while let Some(entry) = dir.next().await {
-                let entry = entry?;
-                let metadata = entry.metadata().await?;
-                let path = entry.path();
+        let mut list: Vec<Box<dyn VMetadata>> = Vec::new();
+        while let Some(entry) = dir.next().await {
+            let entry = entry?;
+            let metadata = entry.metadata().await?;
+            let path = entry.path();
 
-                let vmetadata = if metadata.is_dir() {
-                    VOsMetadata {
-                        is_file: false,
-                        len: 0,
-                        path: self.get_vfs_path(&path)?,
-                    }
-                } else {
-                    VOsMetadata {
-                        is_file: true,
-                        len: metadata.len(),
-                        path: self.get_vfs_path(&path)?,
-                    }
-                };
+            let vmetadata = if metadata.is_dir() {
+                VOsMetadata {
+                    is_file: false,
+                    len: 0,
+                    path: self.get_vfs_path(&path)?,
+                }
+            } else {
+                VOsMetadata {
+                    is_file: true,
+                    len: metadata.len(),
+                    path: self.get_vfs_path(&path)?,
+                }
+            };
 
-                list.push(Box::new(vmetadata));
-            }
-            Ok((list, None))
+            list.push(Box::new(vmetadata));
         }
-    */
+        Ok((list, None))
+    }
 
     async fn metadata(&self, path: &str) -> VfsResult<Box<dyn VMetadata>> {
         let path = self.get_raw_path(path)?;

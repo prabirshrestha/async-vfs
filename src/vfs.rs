@@ -26,13 +26,11 @@ pub trait Vfs: Sync + Send {
         }
     }
 
-    /*
     async fn ls(
         &self,
         path: &str,
         skip_token: Option<String>,
     ) -> VfsResult<(Vec<Box<dyn VMetadata>>, Option<String>)>;
-    */
 
     async fn metadata(&self, path: &str) -> VfsResult<Box<dyn VMetadata>>;
 
