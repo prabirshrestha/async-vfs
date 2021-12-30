@@ -1,8 +1,8 @@
-use crate::testutils::data_dir;
-use async_vfs::backend::OsFs;
+use crate::testutils::{async_test, data_dir};
+use async_vfs_os::OsFs;
 use async_vfs::*;
 
-#[async_std::test]
+#[async_test]
 async fn mv_empty_file() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -33,7 +33,7 @@ async fn mv_empty_file() -> VfsResult<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[async_test]
 async fn mv_dir() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
     assert_eq!(vfs.exists("/dir1/dir2").await?, false);
@@ -43,7 +43,7 @@ async fn mv_dir() -> VfsResult<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[async_test]
 async fn mv_fail_when_using_path_without_forward_slash_prefix() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -60,7 +60,7 @@ async fn mv_fail_when_using_path_without_forward_slash_prefix() -> VfsResult<()>
     Ok(())
 }
 
-#[async_std::test]
+#[async_test]
 async fn mv_fail_when_include_dotdot() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 

@@ -1,8 +1,8 @@
-use crate::testutils::data_dir;
-use async_vfs::backend::OsFs;
+use crate::testutils::{async_test, data_dir};
+use async_vfs_os::OsFs;
 use async_vfs::*;
 
-#[async_std::test]
+#[async_test]
 async fn rm_ok_for_file() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -29,7 +29,7 @@ async fn rm_ok_for_file() -> VfsResult<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[async_test]
 async fn rm_ok_for_empty_dir() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -52,7 +52,7 @@ async fn rm_ok_for_empty_dir() -> VfsResult<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[async_test]
 async fn rm_fail_for_non_existent_file() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -73,7 +73,7 @@ async fn rm_fail_for_non_existent_file() -> VfsResult<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[async_test]
 async fn rm_fail_when_using_path_without_forward_slash_prefix() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -90,7 +90,7 @@ async fn rm_fail_when_using_path_without_forward_slash_prefix() -> VfsResult<()>
     Ok(())
 }
 
-#[async_std::test]
+#[async_test]
 async fn rm_fail_when_include_dotdot() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 

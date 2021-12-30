@@ -1,8 +1,8 @@
-use crate::testutils::data_dir;
-use async_vfs::backend::OsFs;
+use crate::testutils::{async_test, data_dir};
+use async_vfs_os::OsFs;
 use async_vfs::*;
 
-#[async_std::test]
+#[async_test]
 async fn ls_root() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -39,7 +39,7 @@ async fn ls_root() -> VfsResult<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[async_test]
 async fn ls_non_root() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -66,7 +66,7 @@ async fn ls_non_root() -> VfsResult<()> {
     Ok(())
 }
 
-#[async_std::test]
+#[async_test]
 async fn ls_fail_when_using_path_without_forward_slash_prefix() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -83,7 +83,7 @@ async fn ls_fail_when_using_path_without_forward_slash_prefix() -> VfsResult<()>
     Ok(())
 }
 
-#[async_std::test]
+#[async_test]
 async fn ls_fail_when_include_dotdot() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 

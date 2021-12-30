@@ -1,7 +1,6 @@
-use crate::{OpenOptions, VFile, VMetadata, Vfs, VfsError, VfsResult};
-use async_std::{fs, path::PathBuf};
-use async_std::{path::Path, prelude::*};
-use async_trait::async_trait;
+use crate::fs_shims::{fs, read_dir, Path, PathBuf};
+use async_vfs::{async_trait, OpenOptions, VFile, VMetadata, Vfs, VfsError, VfsResult};
+use futures_lite::StreamExt;
 use std::pin::Pin;
 
 pub struct OsFs {
@@ -24,7 +23,7 @@ impl OsFs {
     // if root   => "/home"
     //    path   => "/docs"
     //    result => "/home/docs"
-    fn get_raw_path(&self, path: &str) -> VfsResult<PathBuf> {
+    fn get_real_path(&self, path: &str) -> VfsResult<PathBuf> {
         if path.contains("..") {
             return Err(VfsError::InvalidAbsolutePath {
                 path: path.to_owned(),
@@ -101,16 +100,13 @@ impl VMetadata for VOsMetadata {
 
 #[async_trait]
 impl Vfs for OsFs {
-    async fn exists(&self, path: &str) -> VfsResult<bool> {
-        Ok(self.get_raw_path(path)?.exists().await)
-    }
-
     async fn ls(
         &self,
         path: &str,
         _skip_token: Option<String>,
     ) -> VfsResult<(Vec<Box<dyn VMetadata>>, Option<String>)> {
-        let mut dir = fs::read_dir(self.get_raw_path(path)?).await?;
+        let mut dir = read_dir(self.get_real_path(path)?).await?;
+
         let mut list: Vec<Box<dyn VMetadata>> = Vec::new();
         while let Some(entry) = dir.next().await {
             let entry = entry?;
@@ -137,8 +133,10 @@ impl Vfs for OsFs {
     }
 
     async fn metadata(&self, path: &str) -> VfsResult<Box<dyn VMetadata>> {
-        let path = self.get_raw_path(path)?;
-        let metadata = path.metadata().await?;
+        let path = self.get_real_path(path)?;
+
+        let metadata = fs::metadata(&path).await?;
+
         let vmetadata = if metadata.is_dir() {
             VOsMetadata {
                 is_file: false,
@@ -156,20 +154,16 @@ impl Vfs for OsFs {
     }
 
     async fn mkdir(&self, path: &str) -> VfsResult<()> {
-        Ok(fs::create_dir(self.get_raw_path(path)?).await?)
+        Ok(fs::create_dir(self.get_real_path(path)?).await?)
     }
 
     async fn mv(&self, from: &str, to: &str) -> VfsResult<()> {
-        Ok(fs::rename(self.get_raw_path(from)?, self.get_raw_path(to)?).await?)
+        Ok(fs::rename(self.get_real_path(from)?, self.get_real_path(to)?).await?)
     }
 
     async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Pin<Box<dyn VFile>>> {
-        let raw_path = self.get_raw_path(path)?;
-        if raw_path.is_dir().await {
-            return Err(VfsError::InvalidFile {
-                path: path.to_owned(),
-            });
-        }
+        let raw_path = self.get_real_path(path)?;
+
         let file = fs::OpenOptions::new()
             .read(options.has_read())
             .write(options.has_write())
@@ -178,12 +172,22 @@ impl Vfs for OsFs {
             .truncate(options.has_truncate())
             .open(raw_path)
             .await?;
+
+        #[cfg(all(
+            feature = "runtime-tokio",
+            not(feature = "runtime-smol"),
+            not(feature = "runtime-async-std")
+        ))]
+        let file = async_compat::Compat::new(file);
+
         Ok(Pin::from(Box::new(file)))
     }
 
     async fn rm(&self, path: &str) -> VfsResult<()> {
-        let path = self.get_raw_path(path)?;
-        let metadata = path.metadata().await?;
+        let path = self.get_real_path(path)?;
+
+        let metadata = fs::metadata(&path).await?;
+
         if metadata.is_dir() {
             Ok(fs::remove_dir(path).await?)
         } else {
