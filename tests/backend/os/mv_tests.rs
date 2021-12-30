@@ -35,6 +35,7 @@ async fn mv_empty_file() -> VfsResult<()> {
 }
 
 #[async_test]
+#[ignore]
 async fn mv_dir() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
     assert_eq!(vfs.exists("/dir1/dir2").await?, false);
