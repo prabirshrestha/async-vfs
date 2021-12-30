@@ -23,7 +23,7 @@ impl OsFs {
     // if root   => "/home"
     //    path   => "/docs"
     //    result => "/home/docs"
-    fn get_raw_path(&self, path: &str) -> VfsResult<PathBuf> {
+    fn get_real_path(&self, path: &str) -> VfsResult<PathBuf> {
         if path.contains("..") {
             return Err(VfsError::InvalidAbsolutePath {
                 path: path.to_owned(),
@@ -105,7 +105,7 @@ impl Vfs for OsFs {
         path: &str,
         _skip_token: Option<String>,
     ) -> VfsResult<(Vec<Box<dyn VMetadata>>, Option<String>)> {
-        let mut dir = read_dir(self.get_raw_path(path)?).await?;
+        let mut dir = read_dir(self.get_real_path(path)?).await?;
 
         let mut list: Vec<Box<dyn VMetadata>> = Vec::new();
         while let Some(entry) = dir.next().await {
@@ -133,7 +133,7 @@ impl Vfs for OsFs {
     }
 
     async fn metadata(&self, path: &str) -> VfsResult<Box<dyn VMetadata>> {
-        let path = self.get_raw_path(path)?;
+        let path = self.get_real_path(path)?;
 
         let metadata = fs::metadata(&path).await?;
 
@@ -154,15 +154,15 @@ impl Vfs for OsFs {
     }
 
     async fn mkdir(&self, path: &str) -> VfsResult<()> {
-        Ok(fs::create_dir(self.get_raw_path(path)?).await?)
+        Ok(fs::create_dir(self.get_real_path(path)?).await?)
     }
 
     async fn mv(&self, from: &str, to: &str) -> VfsResult<()> {
-        Ok(fs::rename(self.get_raw_path(from)?, self.get_raw_path(to)?).await?)
+        Ok(fs::rename(self.get_real_path(from)?, self.get_real_path(to)?).await?)
     }
 
     async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Pin<Box<dyn VFile>>> {
-        let raw_path = self.get_raw_path(path)?;
+        let raw_path = self.get_real_path(path)?;
 
         let file = fs::OpenOptions::new()
             .read(options.has_read())
@@ -184,7 +184,7 @@ impl Vfs for OsFs {
     }
 
     async fn rm(&self, path: &str) -> VfsResult<()> {
-        let path = self.get_raw_path(path)?;
+        let path = self.get_real_path(path)?;
 
         let metadata = fs::metadata(&path).await?;
 
