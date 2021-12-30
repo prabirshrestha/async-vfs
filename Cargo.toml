@@ -1,29 +1,5 @@
-[package]
-name = "async-vfs"
-version = "0.20.0"
-authors = ["Prabir Shrestha <mail@prabir.me>"]
-edition = "2018"
-license = "MIT"
-description = "Async Virtual File System"
-repository = "https://github.com/prabirshrestha/async-vfs"
-readme = "README.md"
+[workspace]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
-async-trait = "0.1.42"
-cfg-if = "1.0.0"
-futures-lite = "1.12.0"
-thiserror = "1.0.23"
-async-std = { version = "1.6.0", features = [ "attributes" ], optional = true }
-smol = { version = "1.2.5", optional = true }
-smol-potat = { version = "1.1.2", optional = true }
-tokio = { version = "1.13.0", optional = true, features = ["full", "test-util"] }
-async-compat = { version = "0.2.1", optional = true }
-tokio-stream = { version = "0.1.8", optional = true, default-features = false, features = ["fs"] }
-
-[features]
-runtime-async-std = ["async-std"]
-runtime-smol = ["smol", "smol-potat"]
-runtime-tokio = ["tokio", "tokio-stream", "async-compat"]
-default = []
+members = [
+    "async-vfs",
+]
