@@ -12,7 +12,6 @@ readme = "README.md"
 
 [dependencies]
 async-vfs = { path = "../async-vfs" }
-async-trait = "0.1.42"
 cfg-if = "1.0.0"
 futures-lite = "1.12.0"
 thiserror = "1.0.23"
