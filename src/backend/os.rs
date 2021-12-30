@@ -1,4 +1,4 @@
-use crate::backend::fs_shims::{fs, File, Path, PathBuf};
+use crate::backend::fs_shims::{fs, Path, PathBuf};
 use crate::{async_trait, OpenOptions, VFile, VMetadata, Vfs, VfsError, VfsResult};
 use std::pin::Pin;
 
@@ -142,12 +142,7 @@ impl Vfs for OsFs {
     async fn metadata(&self, path: &str) -> VfsResult<Box<dyn VMetadata>> {
         let path = self.get_raw_path(path)?;
 
-        #[cfg(feature = "runtime-async-std")]
-        let metadata = path.metadata().await?;
-        #[cfg(feature = "runtime-tokio")]
-        let metadata = tokio::fs::metadata(&path).await?;
-        #[cfg(feature = "runtime-smol")]
-        let metadata = smol::fs::metadata(&path).await?;
+        let metadata = fs::metadata(&path).await?;
 
         let vmetadata = if metadata.is_dir() {
             VOsMetadata {
@@ -191,12 +186,7 @@ impl Vfs for OsFs {
     async fn rm(&self, path: &str) -> VfsResult<()> {
         let path = self.get_raw_path(path)?;
 
-        #[cfg(feature = "runtime-async-std")]
-        let metadata = path.metadata().await?;
-        #[cfg(feature = "runtime-tokio")]
-        let metadata = tokio::fs::metadata(&path).await?;
-        #[cfg(feature = "runtime-smol")]
-        let metadata = smol::fs::metadata(&path).await?;
+        let metadata = fs::metadata(&path).await?;
 
         if metadata.is_dir() {
             Ok(fs::remove_dir(path).await?)
