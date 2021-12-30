@@ -13,7 +13,6 @@ async fn exists_true_for_existing_file() -> VfsResult<()> {
 }
 
 #[async_test]
-#[ignore]
 async fn exists_true_for_existing_dir() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
