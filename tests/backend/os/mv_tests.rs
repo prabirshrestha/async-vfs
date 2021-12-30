@@ -3,7 +3,6 @@ use async_vfs::backend::OsFs;
 use async_vfs::*;
 
 #[async_test]
-#[ignore]
 async fn mv_empty_file() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
