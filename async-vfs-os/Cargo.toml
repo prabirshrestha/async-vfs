@@ -1,6 +1,6 @@
 [package]
 name = "async-vfs-os"
-version = "0.20.0"
+version = "0.50.0"
 authors = ["Prabir Shrestha <mail@prabir.me>"]
 edition = "2021"
 license = "MIT"
