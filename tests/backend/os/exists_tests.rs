@@ -12,8 +12,8 @@ async fn exists_true_for_existing_file() -> VfsResult<()> {
     Ok(())
 }
 
-/*
 #[async_test]
+#[ignore]
 async fn exists_true_for_existing_dir() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -22,7 +22,6 @@ async fn exists_true_for_existing_dir() -> VfsResult<()> {
 
     Ok(())
 }
-*/
 
 #[async_test]
 async fn exists_false_for_non_existent_file() -> VfsResult<()> {

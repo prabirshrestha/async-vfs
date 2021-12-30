@@ -3,6 +3,7 @@ use async_vfs::backend::OsFs;
 use async_vfs::*;
 
 #[async_test]
+#[ignore]
 async fn mkdir_ok() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
