@@ -3,7 +3,6 @@ use async_vfs::backend::OsFs;
 use async_vfs::*;
 
 #[async_test]
-#[ignore]
 async fn ls_root() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
@@ -41,7 +40,6 @@ async fn ls_root() -> VfsResult<()> {
 }
 
 #[async_test]
-#[ignore]
 async fn ls_non_root() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
