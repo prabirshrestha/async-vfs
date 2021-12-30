@@ -8,7 +8,7 @@ Support async-std/smol/tokio runtimes.
 
 Adding dependencies in `Cargo.toml`. Use one of the following runtimes.
 
-```
+```yaml
 async-vfs = "x.x.x"
 async-vfs-os = { version = "x.x.x", features = ["runtime-async-std"] } # for async-std runtime
 async-vfs-os = { version = "x.x.x", features = ["runtime-smol"] } # for smol runtime
@@ -16,9 +16,9 @@ async-vfs-os = { version = "x.x.x", features = ["runtime-tokio"] } # for tokio r
 ```
 
 Code:
-```
+```rust
 use async_vfs::Vfs;
 use async_vfs_os::OsFs;
 
-Vfs vfs = OsFs::new("/tmp");
+let vfs = OsFs::new("/tmp"); // pass the root.
 ```
