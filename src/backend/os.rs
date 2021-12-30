@@ -2,9 +2,6 @@ use crate::backend::fs_shims::{fs, Path, PathBuf};
 use crate::{async_trait, OpenOptions, VFile, VMetadata, Vfs, VfsError, VfsResult};
 use std::pin::Pin;
 
-#[cfg(feature = "runtime-tokio")]
-use tokio::prelude::{AsyncRead, AsyncWrite, Future};
-
 pub struct OsFs {
     root: PathBuf,
 }
@@ -179,6 +176,13 @@ impl Vfs for OsFs {
             .truncate(options.has_truncate())
             .open(raw_path)
             .await?;
+
+        #[cfg(all(
+            feature = "runtime-tokio",
+            not(feature = "runtime-smol"),
+            not(feature = "runtime-async-std")
+        ))]
+        let file = async_compat::Compat::new(file);
 
         Ok(Pin::from(Box::new(file)))
     }
