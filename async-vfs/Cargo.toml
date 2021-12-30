@@ -2,7 +2,7 @@
 name = "async-vfs"
 version = "0.20.0"
 authors = ["Prabir Shrestha <mail@prabir.me>"]
-edition = "2018"
+edition = "2021"
 license = "MIT"
 description = "Async Virtual File System"
 repository = "https://github.com/prabirshrestha/async-vfs"
