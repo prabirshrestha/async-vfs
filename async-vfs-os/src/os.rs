@@ -1,5 +1,5 @@
-use crate::backend::fs_shims::{fs, read_dir, Path, PathBuf};
-use crate::{async_trait, OpenOptions, VFile, VMetadata, Vfs, VfsError, VfsResult};
+use crate::fs_shims::{fs, read_dir, Path, PathBuf};
+use async_vfs::{async_trait, OpenOptions, VFile, VMetadata, Vfs, VfsError, VfsResult};
 use futures_lite::StreamExt;
 use std::pin::Pin;
 

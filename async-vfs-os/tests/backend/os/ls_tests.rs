@@ -1,5 +1,5 @@
 use crate::testutils::{async_test, data_dir};
-use async_vfs::backend::OsFs;
+use async_vfs_os::OsFs;
 use async_vfs::*;
 
 #[async_test]
