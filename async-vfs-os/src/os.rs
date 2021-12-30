@@ -132,6 +132,11 @@ impl Vfs for OsFs {
         Ok((list, None))
     }
 
+    async fn cp(&self, from: &str, to: &str) -> VfsResult<()> {
+        fs::copy(self.get_real_path(from)?, self.get_real_path(to)?).await?;
+        Ok(())
+    }
+
     async fn metadata(&self, path: &str) -> VfsResult<Box<dyn VMetadata>> {
         let path = self.get_real_path(path)?;
 

@@ -32,8 +32,8 @@ pub trait Vfs: Sync + Send {
         skip_token: Option<String>,
     ) -> VfsResult<(Vec<Box<dyn VMetadata>>, Option<String>)>;
 
+    async fn cp(&self, from: &str, to: &str) -> VfsResult<()>;
     async fn metadata(&self, path: &str) -> VfsResult<Box<dyn VMetadata>>;
-
     async fn mkdir(&self, path: &str) -> VfsResult<()>;
     async fn mv(&self, from: &str, to: &str) -> VfsResult<()>;
     async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Pin<Box<dyn VFile>>>;
