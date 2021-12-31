@@ -57,5 +57,4 @@ jobs:
       with:
         use-cross: ${{ matrix.usecross }}
         command: build
-        args: --verbose --locked --all --release --target ${{ matrix.target }}
-        cwd: ./async-vfs
+        args: --verbose --locked --all --release --target ${{ matrix.target }} --manifest-path async-vfs/Cargo.toml
