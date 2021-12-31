@@ -90,6 +90,7 @@ async fn open_create_write_new_empty_file() -> VfsResult<()> {
 }
 
 #[async_test]
+#[ignore]
 async fn open_create_write_new_file_with_contents() -> VfsResult<()> {
     let vfs = OsFs::new(&data_dir());
 
