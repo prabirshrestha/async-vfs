@@ -52,9 +52,12 @@ jobs:
         profile: minimal
         override: true
 
+    # NOTE: using `marcopolo/cargo` fork to support the `working-directory` attribute
+    # See: https://github.com/actions-rs/cargo/pull/59
     - name: Build async-vfs
-      uses: actions-rs/cargo@v1
+      uses: marcopolo/cargo
       with:
         use-cross: ${{ matrix.usecross }}
         command: build
-        args: --verbose --all --release --target ${{ matrix.target }} --manifest-path async-vfs/Cargo.toml
+        args: --verbose --all --release --target ${{ matrix.target }}
+        working-directory: async-vfs
