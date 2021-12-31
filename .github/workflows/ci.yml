@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - ci
+
+jobs:
+  build:
+    env:
+      # Emit backtraces on panics.
+      RUST_BACKTRACE: 1
+    runs-on: ${{ matrix.os }}
+    needs: [style]
+    strategy:
+      matrix:
+        build: [linux, linux-arm, macos, winmsvc]
+        include:
+          - build: linux
+            os: ubuntu-latest
+            rust: stable
+            target: x86_64-unknown-linux-musl
+            usecross: false
+          - build: linux-arm
+            os: ubuntu-latest
+            rust: stable
+            target: aarch64-unknown-linux-musl
+            usecross: true
+          - build: macos
+            os: macos-latest
+            rust: stable
+            target: x86_64-apple-darwin
+            usecross: false
+          - build: winmsvc
+            os: windows-latest
+            rust: stable
+            target: x86_64-pc-windows-msvc
+            usecross: false
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: ${{ matrix.rust }}
+        target: ${{ matrix.target }}
+        profile: minimal
+        override: true
+
+    - name: Build async-vfs
+      uses: actions-rs/cargo@v1
+      with:
+        use-cross: ${{ matrix.usecross }}
+        command: build
+        args: --verbose --locked --all --release --target ${{ matrix.target }}
+        cwd: ./async-vfs
