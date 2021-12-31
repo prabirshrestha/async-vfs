@@ -79,3 +79,24 @@ jobs:
         use-cross: ${{ matrix.usecross }}
         command: build
         args: --verbose --release --target ${{ matrix.target }} --package async-vfs-os --features runtime-tokio
+
+    - name: Rust async-vfs-os tests with async-std runtime
+      uses: actions-rs/cargo@v1
+      with:
+        use-cross: ${{ matrix.usecross }}
+        command: test
+        args: --verbose --release --target ${{ matrix.target }} --package async-vfs-os --features runtime-async-std -- --test-threads=1
+
+    - name: Rust async-vfs-os tests with smol runtime
+      uses: actions-rs/cargo@v1
+      with:
+        use-cross: ${{ matrix.usecross }}
+        command: test
+        args: --verbose --release --target ${{ matrix.target }} --package async-vfs-os --features runtime-smol -- --test-threads=1
+
+    - name: Rust async-vfs-os tests with tokio runtime
+      uses: actions-rs/cargo@v1
+      with:
+        use-cross: ${{ matrix.usecross }}
+        command: test
+        args: --verbose --release --target ${{ matrix.target }} --package async-vfs-os --features runtime-tokio -- --test-threads=1
