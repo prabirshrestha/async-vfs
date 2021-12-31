@@ -57,4 +57,4 @@ jobs:
       with:
         use-cross: ${{ matrix.usecross }}
         command: build
-        args: --verbose --all --release --target ${{ matrix.target }} --package async-vfs
+        args: --verbose --release --target ${{ matrix.target }} --package async-vfs
