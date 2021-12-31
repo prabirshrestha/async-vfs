@@ -55,7 +55,7 @@ jobs:
     # NOTE: using `marcopolo/cargo` fork to support the `working-directory` attribute
     # See: https://github.com/actions-rs/cargo/pull/59
     - name: Build async-vfs
-      uses: marcopolo/cargo
+      uses: marcopolo/cargo@a527bf4d534717ff4424a84446c5d710f8833139
       with:
         use-cross: ${{ matrix.usecross }}
         command: build
