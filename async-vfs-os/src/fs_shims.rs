@@ -17,7 +17,7 @@ cfg_if::cfg_if! {
         pub(crate) use async_std::fs;
         pub(crate) use async_std::fs::read_dir;
     } else {
-        compile_error!("async-vfs:
+        compile_error!("async-vfs-os:
 You must enable one of the three runtime feature flags
 to use this crate: async-std/smol/tokio."
 );
