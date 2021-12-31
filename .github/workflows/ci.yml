@@ -64,18 +64,18 @@ jobs:
       with:
         use-cross: ${{ matrix.usecross }}
         command: build
-        args: --verbose --release --target ${{ matrix.target }} --package async-vfs --features runtime-async-std
+        args: --verbose --release --target ${{ matrix.target }} --package async-vfs-os --features runtime-async-std
 
     - name: Build async-vfs-os with smol runtime
       uses: actions-rs/cargo@v1
       with:
         use-cross: ${{ matrix.usecross }}
         command: build
-        args: --verbose --release --target ${{ matrix.target }} --package async-vfs --features runtime-smol
+        args: --verbose --release --target ${{ matrix.target }} --package async-vfs-os --features runtime-smol
 
     - name: Build async-vfs-os with tokio runtime
       uses: actions-rs/cargo@v1
       with:
         use-cross: ${{ matrix.usecross }}
         command: build
-        args: --verbose --release --target ${{ matrix.target }} --package async-vfs --features runtime-tokio
+        args: --verbose --release --target ${{ matrix.target }} --package async-vfs-os --features runtime-tokio
