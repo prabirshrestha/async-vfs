@@ -52,12 +52,23 @@ jobs:
         profile: minimal
         override: true
 
-    # NOTE: using `marcopolo/cargo` fork to support the `working-directory` attribute
-    # See: https://github.com/actions-rs/cargo/pull/59
-    - name: Build async-vfs
-      uses: marcopolo/cargo@a527bf4d534717ff4424a84446c5d710f8833139
+    - name: Build async-vfs and async-vfs-os with async-std runtime
+      uses: actions-rs/cargo@v1
       with:
         use-cross: ${{ matrix.usecross }}
         command: build
-        args: --verbose --all --release --target ${{ matrix.target }}
-        working-directory: async-vfs
+        args: --verbose --all --release --target ${{ matrix.target }} --features runtime-async-std
+
+    - name: Build async-vfs and async-vfs-os with smol runtime
+      uses: actions-rs/cargo@v1
+      with:
+        use-cross: ${{ matrix.usecross }}
+        command: build
+        args: --verbose --all --release --target ${{ matrix.target }} --features runtime-smol
+
+    - name: Build async-vfs and async-vfs-os with tokio runtime
+      uses: actions-rs/cargo@v1
+      with:
+        use-cross: ${{ matrix.usecross }}
+        command: build
+        args: --verbose --all --release --target ${{ matrix.target }} --features runtime-tokio
