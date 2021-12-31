@@ -1,6 +1,6 @@
 # async-vfs for rust
 
-async virtual filesystem for rust
+Generica async virtual filesystem for rust
 
 # Backends
 

@@ -1,8 +1,8 @@
 # async-vfs-os
 
-Async virtual filesystem for [async-vfs](https://crates.io/crates/async-vfs) for OS filesystem backend.
+OS filesystem backed async virtual filesystem for [async-vfs](https://crates.io/crates/async-vfs).
 
-Support async-std/smol/tokio runtimes.
+Supports async-std, smol and tokio runtimes.
 
 ## Usage
 
