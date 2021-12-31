@@ -13,7 +13,6 @@ jobs:
       # Emit backtraces on panics.
       RUST_BACKTRACE: 1
     runs-on: ${{ matrix.os }}
-    needs: [style]
     strategy:
       matrix:
         build: [linux, linux-arm, macos, winmsvc]
