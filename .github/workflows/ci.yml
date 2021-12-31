@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        build: [linux, linux-arm, macos, winmsvc]
+        build: [linux, linux-arm, macos]
         include:
           - build: linux
             os: ubuntu-latest
@@ -31,11 +31,6 @@ jobs:
             os: macos-latest
             rust: stable
             target: x86_64-apple-darwin
-            usecross: false
-          - build: winmsvc
-            os: windows-latest
-            rust: stable
-            target: x86_64-pc-windows-msvc
             usecross: false
 
     steps:
