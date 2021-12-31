@@ -4,7 +4,7 @@ version = "0.52.0"
 authors = ["Prabir Shrestha <mail@prabir.me>"]
 edition = "2021"
 license = "MIT"
-description = "Async Virtual File System"
+description = "Async Virtual File System backed by OS File System"
 repository = "https://github.com/prabirshrestha/async-vfs"
 readme = "README.md"
 
