@@ -52,23 +52,9 @@ jobs:
         profile: minimal
         override: true
 
-    - name: Build async-vfs and async-vfs-os with async-std runtime
+    - name: Build async-vfs
       uses: actions-rs/cargo@v1
       with:
         use-cross: ${{ matrix.usecross }}
         command: build
-        args: --verbose --all --release --target ${{ matrix.target }} --features runtime-async-std
-
-    - name: Build async-vfs and async-vfs-os with smol runtime
-      uses: actions-rs/cargo@v1
-      with:
-        use-cross: ${{ matrix.usecross }}
-        command: build
-        args: --verbose --all --release --target ${{ matrix.target }} --features runtime-smol
-
-    - name: Build async-vfs and async-vfs-os with tokio runtime
-      uses: actions-rs/cargo@v1
-      with:
-        use-cross: ${{ matrix.usecross }}
-        command: build
-        args: --verbose --all --release --target ${{ matrix.target }} --features runtime-tokio
+        args: --verbose --all --release --target ${{ matrix.target }} --package async-vfs
