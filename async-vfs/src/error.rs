@@ -12,6 +12,12 @@ pub enum VfsError {
     #[error("Invalid file: {path}")]
     InvalidFile { path: String },
 
+    #[error("Unauthorized")]
+    Unauthorized,
+
+    #[error("Forbidden")]
+    Forbidden,
+
     #[error("Not supported")]
     NotSupported,
 
