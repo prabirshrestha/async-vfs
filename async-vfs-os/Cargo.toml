@@ -1,6 +1,6 @@
 [package]
 name = "async-vfs-os"
-version = "0.53.0"
+version = "0.54.0"
 authors = ["Prabir Shrestha <mail@prabir.me>"]
 edition = "2021"
 license = "MIT"
@@ -11,7 +11,7 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-async-vfs = { path = "../async-vfs", version = "^0.53.0" }
+async-vfs = { path = "../async-vfs", version = "^0.54.0" }
 cfg-if = "1.0.0"
 futures-lite = "1.12.0"
 async-std = { version = "1.6.0", features = [ "attributes" ], optional = true }
