@@ -1,7 +1,7 @@
 use crate::fs_shims::{fs, read_dir, Path, PathBuf};
 use async_vfs::{async_trait, OpenOptions, VFile, VMetadata, Vfs, VfsError, VfsResult};
 use futures_lite::StreamExt;
-use std::pin::Pin;
+use std::{pin::Pin, time::SystemTime};
 
 pub struct OsFs {
     root: PathBuf,
@@ -11,6 +11,7 @@ struct VOsMetadata {
     path: String,
     is_file: bool,
     len: u64,
+    mtime: u64,
 }
 
 impl OsFs {
@@ -96,6 +97,10 @@ impl VMetadata for VOsMetadata {
     fn len(&self) -> u64 {
         self.len
     }
+
+    fn mtime(&self) -> u64 {
+        self.mtime
+    }
 }
 
 #[async_trait]
@@ -112,18 +117,24 @@ impl Vfs for OsFs {
             let entry = entry?;
             let metadata = entry.metadata().await?;
             let path = entry.path();
+            let mtime = match metadata.modified() {
+                Ok(time) => to_timestamp(&time),
+                _ => 0,
+            };
 
             let vmetadata = if metadata.is_dir() {
                 VOsMetadata {
                     is_file: false,
                     len: 0,
                     path: self.get_vfs_path(&path)?,
+                    mtime,
                 }
             } else {
                 VOsMetadata {
                     is_file: true,
                     len: metadata.len(),
                     path: self.get_vfs_path(&path)?,
+                    mtime,
                 }
             };
 
@@ -141,18 +152,24 @@ impl Vfs for OsFs {
         let path = self.get_real_path(path)?;
 
         let metadata = fs::metadata(&path).await?;
+        let mtime = match metadata.modified() {
+            Ok(time) => to_timestamp(&time),
+            _ => 0,
+        };
 
         let vmetadata = if metadata.is_dir() {
             VOsMetadata {
                 is_file: false,
                 len: 0,
                 path: self.get_vfs_path(&path)?,
+                mtime,
             }
         } else {
             VOsMetadata {
                 is_file: true,
                 len: metadata.len(),
                 path: self.get_vfs_path(&path)?,
+                mtime,
             }
         };
         Ok(Box::new(vmetadata))
@@ -199,4 +216,10 @@ impl Vfs for OsFs {
             Ok(fs::remove_file(path).await?)
         }
     }
+}
+
+fn to_timestamp(time: &SystemTime) -> u64 {
+    time.duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap()
+        .as_millis() as u64
 }
