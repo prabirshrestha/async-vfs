@@ -7,6 +7,7 @@ pub trait VMetadata: Sync + Send {
     fn is_dir(&self) -> bool;
     fn is_file(&self) -> bool;
     fn len(&self) -> u64;
+    fn mtime(&self) -> u64;
 }
 
 pub trait VFile: AsyncRead + AsyncWrite + AsyncSeek {}
