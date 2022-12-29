@@ -183,7 +183,11 @@ impl Vfs for OsFs {
         Ok(fs::rename(self.get_real_path(from)?, self.get_real_path(to)?).await?)
     }
 
-    async fn open(&self, path: &str, options: OpenOptions) -> VfsResult<Pin<Box<dyn VFile>>> {
+    async fn open(
+        &self,
+        path: &str,
+        options: OpenOptions,
+    ) -> VfsResult<Pin<Box<dyn VFile + Send>>> {
         let raw_path = self.get_real_path(path)?;
 
         let file = fs::OpenOptions::new()
