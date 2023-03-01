@@ -179,6 +179,10 @@ impl Vfs for OsFs {
         Ok(fs::create_dir(self.get_real_path(path)?).await?)
     }
 
+    async fn mkdir_all(&self, path: &str) -> VfsResult<()> {
+        Ok(fs::create_dir_all(self.get_real_path(path)?).await?)
+    }
+
     async fn mv(&self, from: &str, to: &str) -> VfsResult<()> {
         Ok(fs::rename(self.get_real_path(from)?, self.get_real_path(to)?).await?)
     }
