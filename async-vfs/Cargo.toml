@@ -13,4 +13,4 @@ readme = "../README.md"
 [dependencies]
 async-trait = "0.1.75"
 futures-lite = "2.1.0"
-thiserror = "1.0.52"
+thiserror = "1.0.53"
