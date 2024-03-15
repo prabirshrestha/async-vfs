@@ -19,7 +19,7 @@ smol = { version = "2.0.0", optional = true }
 smol-potat = { version = "1.1.2", optional = true }
 tokio = { version = "1.36.0", optional = true, features = ["full", "test-util"] }
 async-compat = { version = "0.2.3", optional = true }
-tokio-stream = { version = "0.1.14", optional = true, default-features = false, features = ["fs"] }
+tokio-stream = { version = "0.1.15", optional = true, default-features = false, features = ["fs"] }
 
 [features]
 runtime-async-std = ["async-std"]
